@@ -13,7 +13,8 @@ class ViewController: UIViewController {
     @IBOutlet var numberButtons: [UIButton]!
     
     var elements: [String] {
-        return textView.text.split(separator: " ").map { "\($0)" }
+        // replace all , to .
+        return textView.text.replacingOccurrences(of: ",", with: ".").split(separator: " ").map {String($0)}
     }
     
     // Error check computed variables
@@ -50,7 +51,14 @@ class ViewController: UIViewController {
             textView.text = ""
         }
         
-        textView.text.append(numberText)
+        if(numberText == "AC"){
+            textView.text = ""
+        }
+        
+        else{
+            textView.text.append(numberText)
+        }
+        
     }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
@@ -84,7 +92,7 @@ class ViewController: UIViewController {
     }
     @IBAction func tappedMultiplyButton(_ sender: UIButton) {
         if canAddOperator {
-            textView.text.append(" X ")
+            textView.text.append(" x ")
         } else {
             let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
             alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -105,29 +113,19 @@ class ViewController: UIViewController {
         }
         
         // Create local copy of operations
-        var operationsToReduce = elements
+        let operationsToReduce = elements
         
-        var calculator = CalculatorBasic( expression: textView.text)
-        // Iterate over operations while an operand still here
-        while operationsToReduce.count > 1 {
-            let left = Int(operationsToReduce[0])!
-            let operand = operationsToReduce[1]
-            let right = Int(operationsToReduce[2])!
-            
-            let result: Int
-            switch operand {
-            case "+": result = left + right
-            case "-": result = left - right
-            default: fatalError("Unknown operator !")
-            }
-            
-            operationsToReduce = Array(operationsToReduce.dropFirst(3))
-            operationsToReduce.insert("\(result)", at: 0)
+        let calculator = CalculatorBasic(expression: operationsToReduce)
+        if calculator.isExpressionValid() {
+            let result = CalculatorBasic.formatExpression(expression: textView.text)
+            textView.text = "\(result) = \(calculator.calculate().first!)"
+           // textView.text.append(" = \(calculator.calculate().first!)")
         }
-        
-        textView.text.append(" = \(operationsToReduce.first!)")
-        
-        textView.text = calculator.calculate();
+        else{
+            let alertVC = UIAlertController(title: "Zéro!", message: "Entrez une expression correcte !", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            return self.present(alertVC, animated: true, completion: nil)
+        }
     }
 }
 
