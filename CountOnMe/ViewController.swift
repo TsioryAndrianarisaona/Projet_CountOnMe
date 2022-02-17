@@ -107,6 +107,7 @@ class ViewController: UIViewController {
         // Create local copy of operations
         var operationsToReduce = elements
         
+        var calculator = CalculatorBasic( expression: textView.text)
         // Iterate over operations while an operand still here
         while operationsToReduce.count > 1 {
             let left = Int(operationsToReduce[0])!
@@ -125,7 +126,8 @@ class ViewController: UIViewController {
         }
         
         textView.text.append(" = \(operationsToReduce.first!)")
+        
+        textView.text = calculator.calculate();
     }
-
 }
 

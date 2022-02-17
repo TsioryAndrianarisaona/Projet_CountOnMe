@@ -8,14 +8,16 @@
 
 import Foundation
 protocol Calculator {
-    func calculate()
+    func calculate() -> String
 }
+
+
 class CalculatorBasic: Calculator{
-    var chaine : String
-    init(chaine:String){
-        self.chaine = chaine
+    var expression : String
+    init(expression:String){
+        self.expression = expression
     }
-    func calculate() {
-        <#code#>
+    func calculate() -> String {
+        return "Yes mety"
     }
 }
